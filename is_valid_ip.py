@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+#-*- coding: utf-8 -*-
 
 import re
 
 
-def isValidIp(ip):
+def is_valid_ip(ip):
     """
     检查ip是否合法.
     """
@@ -17,4 +18,4 @@ def isValidIp(ip):
     return len([i for i in s[0].split('.') if (0 <= int(i) <= 255)]) == 4
 
 if __name__ == '__main__':
-    print isValidIp("10.0.0.1")
+    print is_valid_ip("10.0.0.1")
