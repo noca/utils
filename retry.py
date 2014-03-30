@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 
 
+class RetType:
+    SUC = 0
+    FAIL = 1
+    NO = 2
+
+
 def retry(retry_num, interval=5, check_ret=RetType.NO, ret_value_list=[True, ]):
     """
     A decorator which retry run a function util it run successfully.
