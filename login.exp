@@ -1,0 +1,33 @@
+#!/usr/bin/expect
+
+set NODE [lindex $argv 0]
+set NUM [lindex $argv 1]
+if { [llength $argv] != 3} {
+   set IDC "hy"
+} else {
+   set IDC [lindex $argv 2]
+}
+
+set passwd "$passwd"
+
+set timeout 30
+spawn ssh -oStrictHostKeyChecking=no liningning@$IDC-relay.wandoujia.com -p 2222
+
+expect "*assword*"
+send -- "$passwd\r"
+
+if {$NODE=="relay"} {
+   expect "*$*"
+   send "ssh -p2222 -oStrictHostKeyChecking=no liningning@$NODE$NUM.${IDC}01\r"
+   expect "*assword*"
+   send -- "$passwd\r"
+} elseif {$NODE!=""} {
+   expect "*$*"
+   send "ssh -oStrictHostKeyChecking=no liningning@$NODE$NUM.${IDC}01\r"
+   expect "*assword*"
+   send -- "$passwd\r"
+}
+
+
+interact
+exit
