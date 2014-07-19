@@ -1,5 +1,16 @@
 #!/usr/bin/expect
 
+set prompt "请输入RSA设备显示的六位code: "
+puts -nonewline stdout $prompt
+flush stdout
+gets stdin passcode
+
+set user ""
+set pin ""
+set passwdrelay "$pin$passcode"
+set passwdnormal ""
+set suffix "-relay.XXX.com"
+
 set NODE [lindex $argv 0]
 set NUM [lindex $argv 1]
 if { [llength $argv] != 3} {
@@ -8,24 +19,22 @@ if { [llength $argv] != 3} {
    set IDC [lindex $argv 2]
 }
 
-set passwd "$passwd"
-
 set timeout 30
-spawn ssh -oStrictHostKeyChecking=no liningning@$IDC-relay.wandoujia.com -p 2222
+spawn ssh -oStrictHostKeyChecking=no $user@$IDC$suffix -p 2222
 
-expect "*assword*"
-send -- "$passwd\r"
+expect "*PASSCODE:*"
+send -- "$passwdrelay\r"
 
 if {$NODE=="relay"} {
    expect "*$*"
-   send "ssh -p2222 -oStrictHostKeyChecking=no liningning@$NODE$NUM.${IDC}01\r"
+   send "ssh -p2222 -oStrictHostKeyChecking=no $user@$NODE$NUM.${IDC}01\r"
    expect "*assword*"
-   send -- "$passwd\r"
+   send -- "$passwdnormal\r"
 } elseif {$NODE!=""} {
    expect "*$*"
-   send "ssh -oStrictHostKeyChecking=no liningning@$NODE$NUM.${IDC}01\r"
+   send "ssh -oStrictHostKeyChecking=no $user@$NODE$NUM.${IDC}01\r"
    expect "*assword*"
-   send -- "$passwd\r"
+   send -- "$passwdnormal\r"
 }
 
 
