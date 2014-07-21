@@ -42,10 +42,12 @@ class body_callback:
         self.contents = self.contents + buf
 
 
-def http_request_time(input_url):
+def http_get_reqtime(input_url):
     cb = body_callback()
     c = pycurl.Curl()
     c.setopt(pycurl.WRITEFUNCTION, cb.body_callback)
+    # set POSTFIELDS option if it's a post request
+    # c.setopt(c.POSTFIELDS, 'pizza=Quattro+Stagioni&extra=cheese')
     c.setopt(pycurl.ENCODING, 'gzip')
     c.setopt(pycurl.URL, input_url)
     c.perform()
@@ -74,4 +76,4 @@ def http_request_time(input_url):
 
 if __name__ == '__main__':
     input_url = sys.argv[1]
-    print http_request_time(input_url)
+    print http_get_reqtime(input_url)
