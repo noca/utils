@@ -1,0 +1,19 @@
+#!/bin/bash
+
+PS3="plz choose which U want to login:"
+LINES=3
+COLUMNS=3
+
+select var in `cat wandoujia.lst |grep -v "#"`
+do
+    echo "#################################"
+    echo "Your choose is $REPLY"
+    echo "KEY   : ${var%--->*}"
+    echo "VALUE : ${var#*--->}"
+    echo "#################################"
+    ssh ${var#*--->} 
+    break
+done
+
+exit 0
+

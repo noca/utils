@@ -12,9 +12,6 @@ import time
 
 def keepalive(t):
     url = "www.wandoujia.com"
-    headers = {"Content-type": "application/x-www-form-urlencoded",
-               "Accept": "text/plain", "Connection": "Keep-Alive"}
-
     conn = httplib.HTTPConnection(url)
 
     conn.request("GET", "/")
