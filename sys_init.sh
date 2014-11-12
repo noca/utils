@@ -1,6 +1,9 @@
 #!/bin/bash
 # written by liningning
 # date:2014-11-07
+#
+# System init for Redhat/Centos 6.x
+#
 
 
 # Install yum repo
