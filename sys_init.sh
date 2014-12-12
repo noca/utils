@@ -14,10 +14,23 @@ then
     echo "Install yum repo failed."
     exit 1
 fi
+if ! rpm --force -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm 
+then
+    echo "Install yum repo failed."
+    exit 1
+fi
+sed -i "s/enabled=0/enabled=1/g" /etc/yum.repos.d/remi.repo
 
 
 # Install some packages.
 packages="atop
+vim
+sed
+awk
+openssl
+openssl-devel
+pcre
+pcre-devel
 blktrace
 expect
 htop
@@ -341,6 +354,7 @@ sed -i "/GSSAPIAuthentication/s/yes/no/g" /etc/ssh/ssh_config
 
 # Null to iptables
 > /etc/sysconfig/iptables
+/etc/init.d/iptables stop
 
 
 # Setup dmesg timestamp
