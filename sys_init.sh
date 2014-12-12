@@ -7,19 +7,19 @@
 
 
 # Install yum repo
-/bin/cp -a /etc/yum.repos.d /tmp/
-/bin/rm -rf /etc/yum.repos.d/*
-if ! rpm --force -Uvh http://mirrors.hust.edu.cn/epel//6/x86_64/epel-release-6-8.noarch.rpm
-then
-    echo "Install yum repo failed."
-    exit 1
-fi
-if ! rpm --force -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm 
-then
-    echo "Install yum repo failed."
-    exit 1
-fi
-sed -i "s/enabled=0/enabled=1/g" /etc/yum.repos.d/remi.repo
+#/bin/cp -a /etc/yum.repos.d /tmp/
+#/bin/rm -rf /etc/yum.repos.d/*
+#if ! rpm --force -Uvh http://mirrors.hust.edu.cn/epel//6/x86_64/epel-release-6-8.noarch.rpm
+#then
+#    echo "Install yum repo failed."
+#    exit 1
+#fi
+#if ! rpm --force -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm 
+#then
+#    echo "Install yum repo failed."
+#    exit 1
+#fi
+#sed -i "s/enabled=0/enabled=1/g" /etc/yum.repos.d/remi.repo
 
 
 # Install some packages.
