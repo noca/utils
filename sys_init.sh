@@ -346,6 +346,10 @@ net.netfilter.nf_conntrack_tcp_timeout_time_wait = 30" > /etc/sysctl.conf
 sysctl -p
 
 
+# Set selinux off
+sed -i "s/^SELINUX=.*/SELINUX=disabled/g"/etc/selinux/config
+setenforce 0
+
 # Config for sshd
 sed -i "/^UseDNS/s/.*/UseDNS no/g" /etc/ssh/sshd_config
 sed -i "/GSSAPIAuthentication/s/yes/no/g" /etc/ssh/ssh_config
