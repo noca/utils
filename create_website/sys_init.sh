@@ -1,6 +1,4 @@
 #!/bin/bash
-# written by liningning
-# date:2014-11-07
 #
 # System init for Redhat/Centos 6.x
 #
@@ -356,9 +354,27 @@ sed -i "/GSSAPIAuthentication/s/yes/no/g" /etc/ssh/ssh_config
 /etc/init.d/sshd reload
 
 
-# Null to iptables
-> /etc/sysconfig/iptables
-/etc/init.d/iptables stop
+# Iptables set
+#> /etc/sysconfig/iptables
+#/etc/init.d/iptables stop
+echo '*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -s 10.0.0.0/8 -j ACCEPT
+-A INPUT -s 172.0.0.0/8 -j ACCEPT
+-A INPUT -s 192.0.0.0/8 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 0 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+-A INPUT -p udp -m udp --dport 161 -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+COMMIT' >/etc/sysconfig/iptables
+/etc/init.d/iptables start
+chkconfig iptables on
 
 
 # Setup dmesg timestamp
@@ -367,3 +383,4 @@ echo "echo 1 > /sys/module/printk/parameters/time" >> /etc/rc.d/rc.local
 
 # Disable mail
 echo "unset MAILCHECK" >> /etc/profile
+
