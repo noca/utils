@@ -19,35 +19,51 @@ yum -y install libaio expect mysql mysql-server ||exit 1
 
 # 配置 Nginx.
 /bin/rm -rf /etc/nginx/conf.d/*
-echo 'server {
-    listen       80 ;
-    # server_name  nosa.me;   # 此处修改成自己的域名, 并把注释去掉.
+echo 'user              work;
+worker_processes  2;
 
-    access_log /var/log/nginx/access.log;   # 日志文件名可修改, 也可不修改.
-    error_log /var/log/nginx/error.log;
+error_log  /var/log/nginx/error.log;
+#error_log  /var/log/nginx/error.log  notice;
+#error_log  /var/log/nginx/error.log  info;
 
-    root  /home/work/wordpress;    # 此次修改成自己的程序主目录.
-    index index.php;
+pid        /var/run/nginx.pid;
 
-    location / {
-            try_files $uri $uri/ /index.php?$args;
-    }
 
-    location ~* \.(html|js|css|png|jpg|jpeg|gif|ico)$ {
-        expires max;
-    }
+events {
+    worker_connections  65535;
+}
 
-    location ~ \.php$ {
-        fastcgi_pass   127.0.0.1:9000;
-        fastcgi_index  index.php;
-        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-        include        fastcgi_params;
-    }
-}' > /etc/nginx/conf.d/default.conf
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+    client_max_body_size 2048m;
+
+    #gzip  on;
+    
+    # Load config files from the /etc/nginx/conf.d directory
+    # The default server is in conf.d/default.conf
+    include /etc/nginx/conf.d/*.conf;
+
+}' > /etc/nginx/nginx.conf
 
 
 # 配置 PHP.
 sed -i "s/expose_php =.*/expose_php = Off/g"  /etc/php.ini
+sed -i "s/post_max_size =.*/post_max_size = 20M/g" /etc/php.ini
+sed -i "s/upload_max_filesize =.*/upload_max_filesize = 20M/g" /etc/php.ini
 sed -i "s/apache/${php_user}/g" /etc/php-fpm.d/www.conf
 sed -i "s/pm.max_children = 50/pm.max_children = 256/" /etc/php-fpm.d/www.conf
 sed -i "s/pm.start_servers = 5/pm.start_servers = 32/" /etc/php-fpm.d/www.conf
