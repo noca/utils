@@ -37,7 +37,7 @@ class SiteOperation(object):
             error_log /var/log/nginx/$server_name-error.log;
 
             root  $php_dir$server_name;
-            index index.php;
+            index index.php index.html index.htm;
             location / {
                 try_files $$uri $$uri/ /index.php?$$args;
             }
@@ -65,6 +65,8 @@ class SiteOperation(object):
         site_dir = self._php_dir + self._domain
         if not os.path.exists(site_dir):
             os.makedirs(site_dir)
+            # use work as site user
+            os.chown(site_dir, 500, 500)
 
         config_file = self._ngx_dir + self._domain \
                       + ".conf"
@@ -93,9 +95,9 @@ class SiteOperation(object):
         
         real_sites = set(configs).intersection(
             sites)
-        print "已有网站:"
+        print "已有网站:\n"
         for s in real_sites:
-            print "\t%s" % s
+            print "\t%s\n" % s
         
         return True
 
