@@ -5,6 +5,8 @@
 # PHP 代码放在 /home/${php_user} 下, 并修改 Nginx 配置, 然后 reload.
 # 使用 create_mysqldb.sh 建立数据库. 
 
+. env.sh
+
 
 # PHP 用户.
 php_user="$1"
@@ -76,12 +78,20 @@ sed -i "s/;request_slowlog_timeout = 0/request_slowlog_timeout = 5s/" /etc/php-f
 sed -i "s/^rlimit_files =.*/rlimit_files = 65535/" /etc/php-fpm.d/www.conf
 sed -i "s/^apc.shm_size=.*/apc.shm_size=256M/g" /etc/php.d/apc.ini
 sed -i "/short_open_tag/s/Off/On/g" /etc/php.ini
+sed -i "s/.*date\.timezone.*/date\.timezone=Asia\/Shanghai" /etc/php.ini
 
 
 # 启动程序
-/etc/init.d/nginx restart
-/etc/init.d/php-fpm restart
-/etc/init.d/mysqld start
+
+if [ $OS_M_VERSION -eq 7 ]; then
+    systemctl start nginx
+    systemctl start php-fpm
+    systemctl start mysqld
+else
+    /etc/init.d/nginx restart
+    /etc/init.d/php-fpm restart
+    /etc/init.d/mysqld start
+fi
 
 
 # 配置 Mysql.
@@ -93,10 +103,6 @@ spawn mysql -uroot -hlocalhost
 expect \"mysql>\"
 send \"grant all on *.* to root@'localhost' identified by 'hell04321' ; \r\"
 expect \"mysql>\"
-send \"grant all on *.* to example@'localhost' identified by 'hell04321' ; \r\"
-expect \"mysql>\"
-send \"grant all on *.* to example@'10.%' identified by 'hell04321' ; \r\"
-expect \"mysql>\"
 send \"flush privileges ; \r\"
 expect \"mysql>\"
 send \"exit \r\"
@@ -105,7 +111,13 @@ expect eof
 
 
 # 开机启动.
-chkconfig nginx on
-chkconfig php-fpm on
-chkconfig mysqld on
 
+if [ $OS_M_VERSION -eq 7 ]; then
+    systemctl enable nginx
+    systemctl enable php-fpm
+    systemctl enable mysqld
+else
+    chkconfig nginx on
+    chkconfig php-fpm on
+    chkconfig mysqld on
+fi

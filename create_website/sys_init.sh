@@ -19,6 +19,8 @@
 #fi
 #sed -i "s/enabled=0/enabled=1/g" /etc/yum.repos.d/remi.repo
 
+. env.sh
+
 
 # Install some packages.
 packages="atop
@@ -47,6 +49,7 @@ syslog-ng
 tcpstat
 telnet
 screen
+collectd
 tmux"
 for i in $packages
 do
@@ -58,7 +61,11 @@ done
 chkconfig_on="psacct microcode_ctl network crond lm_sensors openibd irqbalance sshd ipmi sendmail"
 for i in ${chkconfig_on}
 do
-    /sbin/chkconfig --level 2345 $i on 2>/dev/null
+    if [ $OS_M_VERSION -eq 7 ]; then
+	systemctl enable $i
+    else
+        /sbin/chkconfig --level 2345 $i on 2>/dev/null
+    fi
 done
 
 
@@ -66,7 +73,11 @@ done
 chkconfig_off="NetworkManager acpid syslog anacron apmd arptables_jf atd auditd autofs avahi-daemon avahi-dnsconfd bluetooth conman cpuspeed cups dnsmasq dund firstboot gpm haldaemon hidd hpoj httpd ibmasm identd iiim ip6tables ipchains irda isdn kdump keytable kudzu linuxconf lm_sensors lpd mcstrans mdmonitor mdmpd messagebus microcode_ctl netconsole netfs netplugd nfs nfslock nscd ntpd oddjobd pand pcmcia pcscd portmap psacct random rawdevices rdisc restorecond rhnsd rpcgssd rpcidmapd rpcsvcgssd saslauthd setroubleshoot sgi_fam smartd smb sysstat vncserver winbind wpa_supplicant xfs xinetd ypbind yum-updatesd iptables snmpd"
 for i in ${chkconfig_off}
 do
-    /sbin/chkconfig --level 2345 $i off 2>/dev/null
+    if [ $OS_M_VERSION -eq 7 ]; then
+	systemctl disable $i
+    else
+        /sbin/chkconfig --level 2345 $i off 2>/dev/null
+    fi
 done
 
 
@@ -373,9 +384,13 @@ echo '*filter
 -A INPUT -p udp -m udp --dport 161 -j ACCEPT
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 COMMIT' >/etc/sysconfig/iptables
-/etc/init.d/iptables start
-chkconfig iptables on
-
+if [ $OS_M_VERSIOn -eq 7 ]; then
+    systemctl start iptables
+    systemctl enable iptables
+else
+    /etc/init.d/iptables start
+    chkconfig iptables on
+fi
 
 # Setup dmesg timestamp
 echo "echo 1 > /sys/module/printk/parameters/time" >> /etc/rc.d/rc.local
