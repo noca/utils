@@ -78,7 +78,7 @@ sed -i "s/;request_slowlog_timeout = 0/request_slowlog_timeout = 5s/" /etc/php-f
 sed -i "s/^rlimit_files =.*/rlimit_files = 65535/" /etc/php-fpm.d/www.conf
 sed -i "s/^apc.shm_size=.*/apc.shm_size=256M/g" /etc/php.d/apc.ini
 sed -i "/short_open_tag/s/Off/On/g" /etc/php.ini
-sed -i "s/.*date\.timezone.*/date\.timezone=Asia\/Shanghai" /etc/php.ini
+sed -i "s/^;date\.timezone.*/date\.timezone=Asia\/Shanghai/" /etc/php.ini
 
 
 # 启动程序

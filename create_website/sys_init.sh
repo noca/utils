@@ -208,14 +208,14 @@ fi
 
 
 # tune fstab
-sed -i '/\ \/\ /s/defaults/defaults,data=ordered/g' /etc/fstab
+#sed -i '/\ \/\ /s/defaults/defaults,data=ordered/g' /etc/fstab
 #sed -i '/\ \/tmp\ /s/defaults/defaults,data=ordered,nodev,nosuid,noexec/g' /etc/fstab
-sed -i '/\ \/tmp\ /s/defaults/defaults,data=ordered,nodev,nosuid/g' /etc/fstab
-sed -i '/\ \/opt\ /s/defaults/defaults,data=ordered,nodev,nosuid/g' /etc/fstab
-sed -i '/\ \/home\ /s/defaults/defaults,data=ordered,nodev,nosuid/g' /etc/fstab
-sed -i '/\ \/var\ /s/defaults/defaults,data=ordered,nodev/g' /etc/fstab
-sed -i '/\ \/usr\ /s/defaults/defaults,data=ordered,nodev/g' /etc/fstab
-sed -i '/\ \/boot\ /s/defaults/defaults,data=ordered,nodev,nosuid,noexec/g' /etc/fstab
+#sed -i '/\ \/tmp\ /s/defaults/defaults,data=ordered,nodev,nosuid/g' /etc/fstab
+#sed -i '/\ \/opt\ /s/defaults/defaults,data=ordered,nodev,nosuid/g' /etc/fstab
+#sed -i '/\ \/home\ /s/defaults/defaults,data=ordered,nodev,nosuid/g' /etc/fstab
+#sed -i '/\ \/var\ /s/defaults/defaults,data=ordered,nodev/g' /etc/fstab
+#sed -i '/\ \/usr\ /s/defaults/defaults,data=ordered,nodev/g' /etc/fstab
+#sed -i '/\ \/boot\ /s/defaults/defaults,data=ordered,nodev,nosuid,noexec/g' /etc/fstab
 
 
 # change hashsize
@@ -243,7 +243,7 @@ EOF
 
 
 # Change lvm config
-sed -i 's/umask = 077/umask = 022/g' /etc/lvm/lvm.conf
+#sed -i 's/umask = 077/umask = 022/g' /etc/lvm/lvm.conf
 
 
 # Set up kernel
